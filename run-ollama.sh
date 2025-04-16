@@ -137,6 +137,17 @@ if docker ps | grep -q "$CONTAINER_NAME"; then
       fi
     done
   fi
+  
+  # APIテスト方法のガイダンス表示（簡潔版）
+  echo ""
+  echo "========================================================"
+  echo "📋 APIテスト方法："
+  echo "========================================================"
+  echo "1. $ ./setup-venv.sh                  # 環境セットアップ"
+  echo "2. $ python test-ollama.py            # APIテスト実行"
+  echo ""
+  echo "他のデバイスからは http://$(hostname -I | awk '{print $1}'):$PORT でアクセス可能"
+  echo "========================================================"
 else
   echo "コンテナの起動に失敗しました。"
   echo "ログを確認してください: docker-compose -f $DOCKER_COMPOSE_FILE logs"
