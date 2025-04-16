@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Ollamaサーバーに対して様々な方法でリクエストを送信するテストスクリプト
-使用方法: python3 test-ollama.py [--model モデル名] [--prompt プロンプト] [--port ポート番号]
+使用方法: python3 test-ollama.py [--model モデル名] [--prompt プロンプト] [--port ポート番号] [--max_length 文字数]
 """
 
 import argparse
@@ -16,12 +16,14 @@ parser.add_argument("--prompt", default="こんにちは、あなたは何がで
 parser.add_argument("--port", default="11434", help="APIサーバーのポート番号 (デフォルト: 11434)")
 parser.add_argument("--api", choices=["direct", "openai", "both"], default="both", 
                     help="使用するAPI (direct: 直接API, openai: OpenAI互換API, both: 両方)")
+parser.add_argument("--max_length", type=int, default=None, help="応答の最大文字数 (例: 20)")
 args = parser.parse_args()
 
 # サーバー情報
 MODEL = args.model
 PROMPT = args.prompt
 PORT = args.port
+MAX_LENGTH = args.max_length
 API_SERVER_URL = f"http://localhost:{PORT}/api/chat"
 OPENAI_BASE_URL = f"http://localhost:{PORT}/v1"
 
@@ -31,6 +33,8 @@ def test_direct_api():
     print(f"モデル: {MODEL}")
     print(f"プロンプト: {PROMPT}")
     print(f"ポート: {PORT}")
+    if MAX_LENGTH:
+        print(f"最大文字数: {MAX_LENGTH}")
     
     headers = {"Content-Type": "application/json"}
     data = {
@@ -40,6 +44,10 @@ def test_direct_api():
             "content": PROMPT,
         }]
     }
+    
+    # 文字数制限が指定されている場合は追加
+    if MAX_LENGTH:
+        data["options"] = {"num_predict": MAX_LENGTH}
 
     try:
         print("リクエスト送信中...")
@@ -80,6 +88,8 @@ def test_openai_api():
     print(f"モデル: {MODEL}")
     print(f"プロンプト: {PROMPT}")
     print(f"ポート: {PORT}")
+    if MAX_LENGTH:
+        print(f"最大文字数: {MAX_LENGTH}")
     
     client = OpenAI(
         base_url=OPENAI_BASE_URL,
@@ -88,13 +98,19 @@ def test_openai_api():
 
     try:
         print("リクエスト送信中...")
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
+        params = {
+            "model": MODEL,
+            "messages": [
                 {"role": "system", "content": "あなたは役立つAIアシスタントです。"},
                 {"role": "user", "content": PROMPT}
             ]
-        )
+        }
+        
+        # 文字数制限が指定されている場合は追加
+        if MAX_LENGTH:
+            params["max_tokens"] = MAX_LENGTH
+        
+        response = client.chat.completions.create(**params)
         
         print("\n応答:")
         print(response.choices[0].message.content)

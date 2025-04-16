@@ -53,6 +53,7 @@ python test-ollama.py [オプション]
 - `--model`: モデル名（デフォルト: tinyllama）
 - `--prompt`: プロンプト
 - `--port`: ポート番号
+- `--max_length`: 応答の最大文字数（例: 20）
 
 ## Pythonでの使用例
 
