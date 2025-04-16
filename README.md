@@ -6,7 +6,7 @@
 
 ```bash
 # 1. このリポジトリをクローン
-git clone <repository-url>
+git clone https://github.com/myaccount-hash/ollama-server.git
 cd ollama-server
 
 # 2. 実行権限を付与
