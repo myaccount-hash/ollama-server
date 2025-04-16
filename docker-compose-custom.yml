@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  ollama:
+    image: gemma2-ollama:latest  # 作成したカスタムイメージを指定
+    container_name: ollama-server
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama-data:/root/.ollama
+    restart: unless-stopped
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    # GPUを使用する場合は以下のコメントを解除してください
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu] 

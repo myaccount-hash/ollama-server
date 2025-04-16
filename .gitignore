@@ -1,0 +1,16 @@
+# データディレクトリは含めない
+ollama-data/
+
+# Python仮想環境は含めない
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Dockerの一時ファイル
+.DS_Store
+Thumbs.db
+.env
+
+# tarファイルは含めない（イメージの保存ファイル）
+*.tar 
