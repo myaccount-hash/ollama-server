@@ -35,14 +35,67 @@ chmod +x run-ollama.sh setup-venv.sh
 - `-g, --gpu`: GPU有効化
 - `-m, --model MODEL`: 自動プルするモデル（デフォルト: tinyllama）
 
-### test-ollama.py
+### 仮想環境のセットアップとテスト実行
 
 ```bash
-source venv/bin/activate  # 仮想環境を有効化
+# 仮想環境をセットアップ
+./setup-venv.sh
+
+# スクリプト実行後に自動的にアクティベートされます
+# もし新しいターミナルでアクティベートする場合は
+source venv/bin/activate  # または ./activate-venv.sh
+
+# APIテスト実行
 python test-ollama.py [オプション]
 ```
 
 オプション:
 - `--model`: モデル名（デフォルト: tinyllama）
 - `--prompt`: プロンプト
-- `--port`: ポート番号 
+- `--port`: ポート番号
+
+## Pythonでの使用例
+
+### 直接APIを使用する場合
+
+```python
+import requests
+
+def query_ollama(prompt, model="tinyllama"):
+    url = "http://localhost:11434/api/chat"
+    headers = {"Content-Type": "application/json"}
+    data = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    
+    response = requests.post(url, headers=headers, json=data)
+    return response.text
+
+# 使用例
+result = query_ollama("こんにちは、今日の天気を教えてください")
+print(result)
+```
+
+### OpenAI互換APIを使用する場合
+
+```python
+from openai import OpenAI
+
+# クライアント初期化
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama"  # 任意の値でOK
+)
+
+# モデル呼び出し
+response = client.chat.completions.create(
+    model="tinyllama",
+    messages=[
+        {"role": "system", "content": "あなたは役立つAIアシスタントです。"},
+        {"role": "user", "content": "こんにちは、自己紹介をしてください"}
+    ]
+)
+
+print(response.choices[0].message.content)
+``` 
