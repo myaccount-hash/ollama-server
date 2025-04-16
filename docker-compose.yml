@@ -2,7 +2,7 @@ version: '3'
 
 services:
   ollama:
-    image: gemma2-ollama:latest  # 作成したカスタムイメージを指定
+    image: ollama/ollama:latest  # 公式イメージを使用
     container_name: ollama-server
     ports:
       - "11434:11434"
@@ -19,4 +19,4 @@ services:
     #       devices:
     #         - driver: nvidia
     #           count: 1
-    #           capabilities: [gpu] 
+    #           capabilities: [gpu]

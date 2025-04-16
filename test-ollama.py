@@ -11,7 +11,7 @@ import sys
 
 # コマンドライン引数の処理
 parser = argparse.ArgumentParser(description="Ollamaサーバーへのリクエストテスト")
-parser.add_argument("--model", default="gemma2:2b", help="使用するモデル名 (デフォルト: gemma2:2b)")
+parser.add_argument("--model", default="tinyllama", help="使用するモデル名 (デフォルト: tinyllama)")
 parser.add_argument("--prompt", default="こんにちは、あなたは何ができますか？", help="送信するプロンプト")
 parser.add_argument("--port", default="11434", help="APIサーバーのポート番号 (デフォルト: 11434)")
 parser.add_argument("--api", choices=["direct", "openai", "both"], default="both", 
@@ -108,12 +108,9 @@ def test_openai_api():
 def main():
     success = []
     
-    # テスト実行
-    if args.api in ["direct", "both"]:
-        success.append(test_direct_api())
-    
-    if args.api in ["openai", "both"]:
-        success.append(test_openai_api())
+    # 常に両方のAPIをテスト
+    success.append(test_direct_api())
+    success.append(test_openai_api())
     
     # 結果表示
     if all(success):
